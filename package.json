@@ -1,0 +1,42 @@
+{
+  "name": "frontend-project-lvl2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/greenfrontend/frontend-project-lvl2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/greenfrontend/frontend-project-lvl2/issues"
+  },
+  "homepage": "https://github.com/greenfrontend/frontend-project-lvl2#readme",
+  "bin": {
+    "gendiff": "dist/bin/gendiff.js"
+  },
+  "dependencies": {
+    "commander": "^4.1.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/node": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.20.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
