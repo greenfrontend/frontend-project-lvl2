@@ -14,8 +14,8 @@ test('compare plane files', () => {
     "host": "hexlet.io"
   };
 
-  const beforeJSON = JSON.stringify(before);
-  const afterJSON = JSON.stringify(after);
+  // const beforeJSON = JSON.stringify(before);
+  // const afterJSON = JSON.stringify(after);
 
   const result = `{
       host: hexlet.io
@@ -26,5 +26,5 @@ test('compare plane files', () => {
     - follow: false
   }`;
 
-  expect(genDiff(beforeJSON, afterJSON)).toEqual(result);
+  expect(genDiff(before, after)).toEqual(result);
 });

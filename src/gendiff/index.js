@@ -14,14 +14,19 @@
 //
 // export default main;
 
-// То есть ваша библиотека должна экспортировать функцию по умолчанию,
-// вызов которой возвращает разницу между данными в виде строки.
-// path1 path2
-// сравниваются данные
-// Результатом работы функции genDiff является строка
+// use: NODE FS SYNC
+// const file1 = getFile(path1);
+// const file2 = getFile(path2);
+//
+// use: JSON.parse
+// const data1 = getData(file1);
+// const data2 = getData(file2);
+//
+// use: lodash has
+// const diff = genDiff(data1, data2);
 
-const genDiff = (file1, file2) => {
-
+const genDiff = (data1, data2) => {
+  return ''
 };
 
 export default genDiff;
