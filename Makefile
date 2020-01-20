@@ -13,3 +13,6 @@ publish-test:
 
 lint:
 	npx eslint .
+
+test:
+	npx jest --watchAll
