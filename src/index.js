@@ -1,16 +1,23 @@
 import fs from 'fs';
 import path from 'path';
+import yaml from 'js-yaml';
 import { difference } from 'lodash';
 
 const readFile = (filePath) => {
+  const fileFormat = path.extname(filePath).slice(1);
   const absolutePath = path.join(process.cwd(), filePath);
   const content = fs.readFileSync(absolutePath);
-  return content.toString();
+  return [content.toString(), fileFormat];
 };
 
-const parseFile = (content) => {
-  const data = JSON.parse(content);
-  return data;
+const parseFile = (content, format) => {
+  if (format === 'json') {
+    return JSON.parse(content);
+  }
+  if (format === 'yml') {
+    return yaml.load(content);
+  }
+  return null;
 };
 
 const format = (lines) => {
@@ -56,11 +63,11 @@ const compare = (data1, data2) => {
 };
 
 export default (path1, path2) => {
-  const content1 = readFile(path1);
-  const content2 = readFile(path2);
+  const [content1, format1] = readFile(path1);
+  const [content2, format2] = readFile(path2);
 
-  const data1 = parseFile(content1);
-  const data2 = parseFile(content2);
+  const data1 = parseFile(content1, format1);
+  const data2 = parseFile(content2, format2);
 
   const differenceInFiles = compare(data1, data2);
   const result = format(differenceInFiles);
