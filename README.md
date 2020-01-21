@@ -5,6 +5,21 @@
 
 ### Compares two configuration files and shows a difference.
 
+### Install
+
+```bash
+sudo npm i -g difference-greenfrontend
+```
+
+### How to use
+
+```bash
+gendiff [options] <firstConfig> <secondConfig>
+```
+
+### Example of usage
+[![asciicast](https://asciinema.org/a/Or3PEVZpX4hZygBYvDAl8LTL3.svg)](https://asciinema.org/a/Or3PEVZpX4hZygBYvDAl8LTL3)
+
 ### Help:
 
 ```bash
