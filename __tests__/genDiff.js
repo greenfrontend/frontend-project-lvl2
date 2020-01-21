@@ -2,18 +2,15 @@ import path from 'path';
 import genDiff from '../src';
 import result from '../__fixtures__/flatResult';
 
-test('compare flat json files', () => {
-  const fixturesPath = '__fixtures__';
-  const path1 = path.join(fixturesPath, 'before.json');
-  const path2 = path.join(fixturesPath, 'after.json');
+const formats = ['json', 'yml', 'ini'];
+const fixturesPath = '__fixtures__';
 
-  expect(genDiff(path1, path2)).toEqual(result);
-});
+const testTable = formats.map((format) => [
+  format,
+  path.join(fixturesPath, `before.${format}`),
+  path.join(fixturesPath, `after.${format}`),
+]);
 
-test('compare flat yml files', () => {
-  const fixturesPath = '__fixtures__';
-  const path1 = path.join(fixturesPath, 'before.yml');
-  const path2 = path.join(fixturesPath, 'after.yml');
-
-  expect(genDiff(path1, path2)).toEqual(result);
+test.each(testTable)('compare files %s', (format, path1, path2) => {
+  expect(genDiff(path1, path2)).toBe(result);
 });
