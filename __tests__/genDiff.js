@@ -1,10 +1,8 @@
 import path from 'path';
-import genDiff from '../src/'
+import genDiff from '../src';
 
 test('compare flat json files', () => {
-
-  const fixturesPath = `__fixtures__`;
-
+  const fixturesPath = '__fixtures__';
   const path1 = path.join(fixturesPath, 'before.json');
   const path2 = path.join(fixturesPath, 'after.json');
 
@@ -17,5 +15,5 @@ test('compare flat json files', () => {
   + verbose: true
 }`;
 
-  expect(genDiff(path1, path2)).toEqual(result)
+  expect(genDiff(path1, path2)).toEqual(result);
 });

@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { difference } from 'lodash';
 
 const readFile = (filePath) => {
   const absolutePath = path.join(process.cwd(), filePath);
@@ -41,16 +42,15 @@ const compare = (data1, data2) => {
       if (value1 === value2) {
         return [...acc, [' ', key, value1]];
       }
+
       return [...acc,
         ['+', key, value2],
         ['-', key, value1],
       ];
     }, []);
 
-  const addedKeys = keys2
-    .reduce((acc, key) => ((!keys1.includes(key))
-      ? [...acc, ['+', key, data2[key]]]
-      : acc), []);
+  const addedKeys = difference(keys2, keys1)
+    .map((key) => ['+', key, data2[key]]);
 
   return [...changedKeys, ...addedKeys];
 };
@@ -62,8 +62,8 @@ export default (path1, path2) => {
   const data1 = parseFile(content1);
   const data2 = parseFile(content2);
 
-  const difference = compare(data1, data2);
-  const result = format(difference);
+  const differenceInFiles = compare(data1, data2);
+  const result = format(differenceInFiles);
 
   return result;
 };
