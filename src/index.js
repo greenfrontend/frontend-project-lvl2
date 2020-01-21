@@ -1,36 +1,13 @@
 import fs from 'fs';
 import path from 'path';
-import yaml from 'js-yaml';
 import { difference } from 'lodash';
+import parseFile from "./parsers";
 
 const readFile = (filePath) => {
   const fileFormat = path.extname(filePath).slice(1);
   const absolutePath = path.join(process.cwd(), filePath);
   const content = fs.readFileSync(absolutePath);
   return [content.toString(), fileFormat];
-};
-
-const parseFile = (content, format) => {
-  if (format === 'json') {
-    return JSON.parse(content);
-  }
-  if (format === 'yml') {
-    return yaml.load(content);
-  }
-  return null;
-};
-
-const format = (lines) => {
-  const lineBreak = '\n';
-  const offset = ' '.repeat(2);
-
-  const result = lines.map((line) => {
-    const [sign, key, value] = line;
-    const string = `${sign} ${key}: ${value}`;
-    return `${offset}${string}${lineBreak}`;
-  });
-
-  return `{\n${result.join('')}}`;
 };
 
 const compare = (data1, data2) => {
@@ -60,6 +37,19 @@ const compare = (data1, data2) => {
     .map((key) => ['+', key, data2[key]]);
 
   return [...changedKeys, ...addedKeys];
+};
+
+const format = (lines) => {
+  const lineBreak = '\n';
+  const offset = ' '.repeat(2);
+
+  const result = lines.map((line) => {
+    const [sign, key, value] = line;
+    const string = `${sign} ${key}: ${value}`;
+    return `${offset}${string}${lineBreak}`;
+  });
+
+  return `{\n${result.join('')}}`;
 };
 
 export default (path1, path2) => {
