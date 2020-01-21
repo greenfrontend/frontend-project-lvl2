@@ -1,7 +1,9 @@
 import fs from 'fs';
+import path from 'path';
 
-const readFile = (path) => {
-  const content = fs.readFileSync(path);
+const readFile = (filePath) => {
+  const absolutePath = path.join(process.cwd(), filePath);
+  const content = fs.readFileSync(absolutePath);
   return content.toString();
 };
 
