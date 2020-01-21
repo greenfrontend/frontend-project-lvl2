@@ -33,6 +33,9 @@ console.log(diff);
 ### Example of usage with `yml` files
 [![asciicast](https://asciinema.org/a/c8QWfzSsUgrVIPUB43BKNJjit.svg)](https://asciinema.org/a/c8QWfzSsUgrVIPUB43BKNJjit)
 
+### Example of usage with `ini` files
+[![asciicast](https://asciinema.org/a/JhgwBFeHTvHmoYcCjkD64p93m.svg)](https://asciinema.org/a/JhgwBFeHTvHmoYcCjkD64p93m)
+
 ### Help:
 
 ```bash
