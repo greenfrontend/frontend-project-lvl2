@@ -27,8 +27,11 @@ const diff = genDiff(pathToFile1, pathToFile2);
 console.log(diff);
 ```
 
-### Example of usage
+### Example of usage with `json` files
 [![asciicast](https://asciinema.org/a/Or3PEVZpX4hZygBYvDAl8LTL3.svg)](https://asciinema.org/a/Or3PEVZpX4hZygBYvDAl8LTL3)
+
+### Example of usage with `yml` files
+[![asciicast](https://asciinema.org/a/c8QWfzSsUgrVIPUB43BKNJjit.svg)](https://asciinema.org/a/c8QWfzSsUgrVIPUB43BKNJjit)
 
 ### Help:
 
