@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { difference } from 'lodash';
-import parseFile from "./parsers";
+import parseFile from './parsers';
 
 const readFile = (filePath) => {
   const fileFormat = path.extname(filePath).slice(1);
