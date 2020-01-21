@@ -2,11 +2,15 @@ import fs from 'fs';
 
 const readFile = (path) => {
   const content = fs.readFileSync(path);
-  const data = JSON.parse(content.toString());
+  return content.toString();
+};
+
+const parseFile = (content) => {
+  const data = JSON.parse(content);
   return data;
 };
 
-const linesToString = (lines) => {
+const format = (lines) => {
   const lineBreak = '\n';
   const offset = ' '.repeat(2);
 
@@ -50,11 +54,14 @@ const compare = (data1, data2) => {
 };
 
 export default (path1, path2) => {
-  const data1 = readFile(path1);
-  const data2 = readFile(path2);
+  const content1 = readFile(path1);
+  const content2 = readFile(path2);
+
+  const data1 = parseFile(content1);
+  const data2 = parseFile(content2);
 
   const difference = compare(data1, data2);
-  const result = linesToString(difference);
+  const result = format(difference);
 
   return result;
 };
