@@ -15,4 +15,7 @@ lint:
 	npx eslint .
 
 test:
+	npx jest
+
+test-dev:
 	npx jest --watchAll
