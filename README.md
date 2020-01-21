@@ -11,10 +11,18 @@
 sudo npm i -g difference-greenfrontend
 ```
 
-### How to use
+### Use as CLI
 
 ```bash
 gendiff [options] <firstConfig> <secondConfig>
+```
+
+### Use as library
+
+```javascript
+import genDiff from 'difference-greenfrontend';
+const diff = genDiff(pathToFile1, pathToFile2);
+console.log(diff);
 ```
 
 ### Example of usage
