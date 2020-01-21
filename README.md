@@ -21,7 +21,9 @@ gendiff [options] <firstConfig> <secondConfig>
 
 ```javascript
 import genDiff from 'difference-greenfrontend';
+
 const diff = genDiff(pathToFile1, pathToFile2);
+
 console.log(diff);
 ```
 
