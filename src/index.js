@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { difference } from 'lodash';
+import { difference, has, uniq, union } from 'lodash';
 import parseFile from './parsers';
+
+const isObject = (data) => typeof data === "object";
 
 const readFile = (filePath) => {
   const fileFormat = path.extname(filePath).slice(1);
@@ -10,33 +12,38 @@ const readFile = (filePath) => {
   return [content.toString(), fileFormat];
 };
 
+// status: ADDED, REMOVED, CHANGED, UNCHANGED
+// ['status', 'key', 'value', 'level', 'children?']
+
 const compare = (data1, data2) => {
   const keys1 = Object.keys(data1);
   const keys2 = Object.keys(data2);
+  const allKeys = union(keys1, keys2);
 
-  const changedKeys = keys1
-    .reduce((acc, key) => {
-      const value1 = data1[key];
-      const value2 = data2[key];
-
-      if (!keys2.includes(key)) {
-        return [...acc, ['-', key, value1]];
-      }
-
+  const func = (acc, key) => {
+    const value1 = data1[key];
+    const value2 = data2[key];
+    if (has(data1, key) && has(data2, key)) {
       if (value1 === value2) {
-        return [...acc, [' ', key, value1]];
+        return [...acc, [' ', key, value1]]
+      } else {
+        return [...acc,
+          ['+', key, value2],
+          ['-', key, value1]
+        ]
       }
+    }
+    if (!keys1.includes(key)) {
+      return [...acc, ['+', key, data2[key]]]
+    }
+    if (!keys2.includes(key)) {
+      return [...acc, ['-', key, data1[key]]]
+    }
+  };
 
-      return [...acc,
-        ['+', key, value2],
-        ['-', key, value1],
-      ];
-    }, []);
+  const result = allKeys.reduce(func, []);
 
-  const addedKeys = difference(keys2, keys1)
-    .map((key) => ['+', key, data2[key]]);
-
-  return [...changedKeys, ...addedKeys];
+  return result;
 };
 
 const format = (lines) => {
