@@ -1,9 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { difference, has, uniq, union } from 'lodash';
+import { has, union } from 'lodash';
 import parseFile from './parsers';
-
-const isObject = (data) => typeof data === "object";
 
 const readFile = (filePath) => {
   const fileFormat = path.extname(filePath).slice(1);
@@ -13,7 +11,19 @@ const readFile = (filePath) => {
 };
 
 // status: ADDED, REMOVED, CHANGED, UNCHANGED
-// ['status', 'key', 'value', 'level', 'children?']
+// ['status', 'key', 'value', 'children?']
+
+const isObject = (data) => typeof data === "object";
+
+const stringify = (data) => {
+  const keys = Object.keys(data);
+  return keys.reduce((acc, key) => {
+    if (isObject(data[key])) {
+      return [...acc, [' ', key, stringify(data[key])]]
+    }
+    return [...acc, [' ', key, data[key]]];
+  }, [])
+};
 
 const compare = (data1, data2) => {
   const keys1 = Object.keys(data1);
@@ -24,31 +34,47 @@ const compare = (data1, data2) => {
     const value1 = data1[key];
     const value2 = data2[key];
     if (has(data1, key) && has(data2, key)) {
+      if (isObject(value1) && isObject(value2)) {
+        const children = compare(value1, value2);
+        return [...acc, [
+          ' ',
+          key,
+          value1,
+          children
+        ]]
+      }
       if (value1 === value2) {
         return [...acc, [' ', key, value1]]
       } else {
         return [...acc,
-          ['+', key, value2],
-          ['-', key, value1]
+          ['+', key, value2, isObject(value2) ? stringify(value2) : []],
+          ['-', key, value1, isObject(value1) ? stringify(value1) : []]
         ]
       }
     }
     if (!keys1.includes(key)) {
+      if (isObject(data2[key])) {
+        return [...acc, ['+', key, stringify(data2[key])]]
+      }
       return [...acc, ['+', key, data2[key]]]
     }
     if (!keys2.includes(key)) {
+      if (isObject(data1[key])) {
+        return [...acc, ['-', key, stringify(data1[key])]]
+      }
       return [...acc, ['-', key, data1[key]]]
     }
   };
 
   const result = allKeys.reduce(func, []);
-
   return result;
 };
 
 const format = (lines) => {
   const lineBreak = '\n';
   const offset = ' '.repeat(2);
+
+  console.log({l: JSON.stringify(lines)});
 
   const result = lines.map((line) => {
     const [sign, key, value] = line;
