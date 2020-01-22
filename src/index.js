@@ -11,17 +11,33 @@ const readFile = (filePath) => {
 };
 
 // status: ADDED, REMOVED, CHANGED, UNCHANGED
-// ['status', 'key', 'value', 'children?']
+// ['type', 'status', 'key', 'value', 'children?']
+
+const type = {
+  flat: 'flat',
+  nested: 'nested',
+};
+
+const statuses = {
+  added: 'added',
+  removed: 'removed',
+  changed: 'changed',
+  unchanged: 'unchanged',
+};
 
 const isObject = (data) => typeof data === 'object';
 
 const stringify = (data) => {
   const keys = Object.keys(data);
   return keys.reduce((acc, key) => {
-    if (isObject(data[key])) {
-      return [...acc, [' ', key, stringify(data[key])]];
-    }
-    return [...acc, [' ', key, data[key]]];
+    const value = data[key];
+    return [...acc, {
+      type: isObject(value) ? type.nested : type.flat,
+      statuses: statuses.unchanged,
+      key,
+      value,
+      children: isObject(value) ? stringify(value) : null
+    }]
   }, []);
 };
 
@@ -36,36 +52,79 @@ const compare = (data1, data2) => {
     if (has(data1, key) && has(data2, key)) {
       if (isObject(value1) && isObject(value2)) {
         const children = compare(value1, value2);
-        return [...acc, [
-          ' ',
+        return [...acc, {
+          type: type.nested,
+          status: statuses.unchanged,
           key,
-          value1,
+          value: value1,
           children,
-        ]];
+        }];
       }
 
       if (value1 === value2) {
-        return [...acc, [' ', key, value1]];
+        return [...acc, {
+          type: type.flat,
+          status: statuses.unchanged,
+          key,
+          value: value1,
+          children: null
+        }];
       }
 
       return [...acc,
-        ['+', key, value2, isObject(value2) ? stringify(value2) : []],
-        ['-', key, value1, isObject(value1) ? stringify(value1) : []],
+        {
+          type: type.flat,
+          status: statuses.added,
+          key,
+          value: value2,
+          children: isObject(value2) ? stringify(value2) : null
+        },
+        {
+          type: type.flat,
+          status: statuses.removed,
+          key,
+          value1,
+          children: isObject(value1) ? stringify(value1) : null
+        }
       ];
     }
     if (!keys1.includes(key)) {
-      if (isObject(data2[key])) {
-        return [...acc, ['+', key, value2, stringify(data2[key])]];
+      if (isObject(value2)) {
+        return [...acc, {
+          type: type.nested,
+          status: statuses.added,
+          key,
+          value: value2,
+          children: stringify(value2)
+        }];
       }
-      return [...acc, ['+', key, data2[key]]];
+      return [...acc, {
+        type: type.flat,
+        status: statuses.added,
+        key,
+        value: value2,
+        children: null
+      }];
     }
     if (!keys2.includes(key)) {
-      if (isObject(data1[key])) {
-        return [...acc, ['-', key, value1, stringify(data1[key])]];
+      if (isObject(value1)) {
+        return [...acc, {
+          type: type.nested,
+          status: statuses.removed,
+          key,
+          value1,
+          children: stringify(value1)
+        }];
       }
-      return [...acc, ['-', key, data1[key]]];
+      return [...acc, {
+        type: type.flat,
+        status: statuses.removed,
+        key,
+        value: value1,
+        children: null
+      }];
     }
-    return null;
+    return null
   };
 
   const ast = keys.reduce(buildAST, []);
@@ -102,6 +161,7 @@ export default (path1, path2) => {
   const data2 = parseFile(content2, format2);
 
   const differenceInFiles = compare(data1, data2);
+  console.log({result: JSON.stringify(differenceInFiles)})
   const result = format(differenceInFiles);
 
   return result;
