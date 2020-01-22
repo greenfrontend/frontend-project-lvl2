@@ -1,9 +1,9 @@
 import path from 'path';
 import genDiff from '../src';
-import resultFlat from '../__fixtures__/resultFlat';
+// import resultFlat from '../__fixtures__/resultFlat';
 import resultNested from '../__fixtures__/resultNested';
 
-const formats = ['json', 'yml', 'ini'];
+// const formats = ['json', 'yml', 'ini'];
 const fixturesPath = '__fixtures__';
 
 // const testTable = formats.map((format) => [

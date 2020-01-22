@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { has, union, flatten } from 'lodash';
+import { has, union } from 'lodash';
 import parseFile from './parsers';
 
 const readFile = (filePath) => {
@@ -72,29 +72,26 @@ const compare = (data1, data2) => {
   return ast;
 };
 
-const format = (lines) => {
+const format = (ast) => {
+  const iter = (lines, level) => lines.map((line) => {
+    const baseOffset = ' '.repeat(2);
+    const offset = baseOffset + baseOffset.repeat(level);
+    const [sign, key, value, children] = line;
 
-  const iter = (lines, level, acc) => {
-    return lines.map((line) => {
-      const baseOffset = ' '.repeat(2);
-      const offset = baseOffset + baseOffset.repeat(level);
-      const [sign, key, value, children] = line;
+    if (children && children.length > 0) {
+      const childrenStrings = iter(children, level + 2);
+      return `\n${offset}${sign} ${key}: {${childrenStrings}\n${offset}  }`;
+    }
 
-      if (children && children.length > 0) {
-        const childrenStrings = iter(children, level + 2, acc);
-        return `\n${offset}${sign} ${key}: {${childrenStrings}\n${offset}  }`
-      }
+    return `\n${offset}${sign} ${key}: ${value}`;
+  });
 
-      return `\n${offset}${sign} ${key}: ${value}`;
-    })
-  };
+  const result = iter(ast, 0);
 
-  const result = iter(lines, 0, []);
+  const start = '{';
+  const end = '\n}';
 
-  const start = `{`;
-  const end = `\n}`;
-
-  return `${start}${result.join('')}${end}`
+  return `${start}${result.join('')}${end}`;
 };
 
 export default (path1, path2) => {
