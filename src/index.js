@@ -55,13 +55,13 @@ const compare = (data1, data2) => {
     }
     if (!keys1.includes(key)) {
       if (isObject(data2[key])) {
-        return [...acc, ['+', key, stringify(data2[key])]];
+        return [...acc, ['+', key, value2, stringify(data2[key])]];
       }
       return [...acc, ['+', key, data2[key]]];
     }
     if (!keys2.includes(key)) {
       if (isObject(data1[key])) {
-        return [...acc, ['-', key, stringify(data1[key])]];
+        return [...acc, ['-', key, value1, stringify(data1[key])]];
       }
       return [...acc, ['-', key, data1[key]]];
     }
@@ -75,6 +75,8 @@ const compare = (data1, data2) => {
 const format = (lines) => {
   const lineBreak = '\n';
   const offset = ' '.repeat(2);
+
+  console.log(JSON.stringify(lines))
 
   const result = lines.map((line) => {
     const [sign, key, value] = line;
