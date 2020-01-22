@@ -28,9 +28,9 @@ const stringify = (data) => {
 const compare = (data1, data2) => {
   const keys1 = Object.keys(data1);
   const keys2 = Object.keys(data2);
-  const allKeys = union(keys1, keys2);
+  const keys = union(keys1, keys2);
 
-  const func = (acc, key) => {
+  const buildAST = (acc, key) => {
     const value1 = data1[key];
     const value2 = data2[key];
     if (has(data1, key) && has(data2, key)) {
@@ -66,15 +66,13 @@ const compare = (data1, data2) => {
     }
   };
 
-  const result = allKeys.reduce(func, []);
-  return result;
+  const ast = keys.reduce(buildAST, []);
+  return ast;
 };
 
 const format = (lines) => {
   const lineBreak = '\n';
   const offset = ' '.repeat(2);
-
-  console.log({l: JSON.stringify(lines)});
 
   const result = lines.map((line) => {
     const [sign, key, value] = line;
