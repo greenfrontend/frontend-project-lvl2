@@ -6,15 +6,15 @@ import resultNested from '../__fixtures__/resultNested';
 const formats = ['json', 'yml', 'ini'];
 const fixturesPath = '__fixtures__';
 
-const testTable = formats.map((format) => [
-  format,
-  path.join(fixturesPath, `before.${format}`),
-  path.join(fixturesPath, `after.${format}`),
-]);
-
-test.each(testTable)('compare flat files %s', (format, path1, path2) => {
-  expect(genDiff(path1, path2)).toEqual(resultFlat);
-});
+// const testTable = formats.map((format) => [
+//   format,
+//   path.join(fixturesPath, `before.${format}`),
+//   path.join(fixturesPath, `after.${format}`),
+// ]);
+//
+// test.each(testTable)('compare flat files %s', (format, path1, path2) => {
+//   expect(genDiff(path1, path2)).toEqual(resultFlat);
+// });
 
 test('compare nested files', () => {
   const path1 = path.join(fixturesPath, 'beforeNested.json');
@@ -22,3 +22,10 @@ test('compare nested files', () => {
 
   expect(genDiff(path1, path2)).toEqual(resultNested);
 });
+
+// test('compare nested files', () => {
+//   const path1 = path.join(fixturesPath, 'before.json');
+//   const path2 = path.join(fixturesPath, 'after.json');
+//
+//   expect(genDiff(path1, path2)).toEqual(resultFlat);
+// });

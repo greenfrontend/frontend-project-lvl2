@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { has, union } from 'lodash';
+import { has, union, flatten } from 'lodash';
 import parseFile from './parsers';
 
 const readFile = (filePath) => {
@@ -73,18 +73,28 @@ const compare = (data1, data2) => {
 };
 
 const format = (lines) => {
-  const lineBreak = '\n';
-  const offset = ' '.repeat(2);
 
-  console.log(JSON.stringify(lines))
+  const iter = (lines, level, acc) => {
+    return lines.map((line) => {
+      const baseOffset = ' '.repeat(2);
+      const offset = baseOffset + baseOffset.repeat(level);
+      const [sign, key, value, children] = line;
 
-  const result = lines.map((line) => {
-    const [sign, key, value] = line;
-    const string = `${sign} ${key}: ${value}`;
-    return `${offset}${string}${lineBreak}`;
-  });
+      if (children && children.length > 0) {
+        const childrenStrings = iter(children, level + 2, acc);
+        return `\n${offset}${sign} ${key}: {${childrenStrings}\n${offset}  }`
+      }
 
-  return `{\n${result.join('')}}`;
+      return `\n${offset}${sign} ${key}: ${value}`;
+    })
+  };
+
+  const result = iter(lines, 0, []);
+
+  const start = `{`;
+  const end = `\n}`;
+
+  return `${start}${result.join('')}${end}`
 };
 
 export default (path1, path2) => {
