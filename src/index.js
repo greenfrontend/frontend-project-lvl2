@@ -13,16 +13,23 @@ const readFile = (filePath) => {
 // status: ADDED, REMOVED, CHANGED, UNCHANGED
 // ['type', 'status', 'key', 'value', 'children?']
 
-const type = {
+const types = {
   flat: 'flat',
   nested: 'nested',
 };
 
 const statuses = {
   added: 'added',
-  removed: 'removed',
+  deleted: 'deleted',
   changed: 'changed',
   unchanged: 'unchanged',
+};
+
+const signs = {
+  added: '+',
+  deleted: '-',
+  changed: '-',
+  unchanged: ' '
 };
 
 const isObject = (data) => typeof data === 'object';
@@ -32,8 +39,8 @@ const stringify = (data) => {
   return keys.reduce((acc, key) => {
     const value = data[key];
     return [...acc, {
-      type: isObject(value) ? type.nested : type.flat,
-      statuses: statuses.unchanged,
+      type: isObject(value) ? types.nested : types.flat,
+      status: statuses.unchanged,
       key,
       value,
       children: isObject(value) ? stringify(value) : null
@@ -53,17 +60,16 @@ const compare = (data1, data2) => {
       if (isObject(value1) && isObject(value2)) {
         const children = compare(value1, value2);
         return [...acc, {
-          type: type.nested,
+          type: types.nested,
           status: statuses.unchanged,
           key,
           value: value1,
           children,
         }];
       }
-
       if (value1 === value2) {
         return [...acc, {
-          type: type.flat,
+          type: types.flat,
           status: statuses.unchanged,
           key,
           value: value1,
@@ -73,17 +79,17 @@ const compare = (data1, data2) => {
 
       return [...acc,
         {
-          type: type.flat,
+          type: isObject(value2) ? types.nested : types.flat,
           status: statuses.added,
           key,
           value: value2,
           children: isObject(value2) ? stringify(value2) : null
         },
         {
-          type: type.flat,
-          status: statuses.removed,
+          type: isObject(value1) ? types.nested : types.flat,
+          status: statuses.deleted,
           key,
-          value1,
+          value: value1,
           children: isObject(value1) ? stringify(value1) : null
         }
       ];
@@ -91,7 +97,7 @@ const compare = (data1, data2) => {
     if (!keys1.includes(key)) {
       if (isObject(value2)) {
         return [...acc, {
-          type: type.nested,
+          type: types.nested,
           status: statuses.added,
           key,
           value: value2,
@@ -99,7 +105,7 @@ const compare = (data1, data2) => {
         }];
       }
       return [...acc, {
-        type: type.flat,
+        type: types.flat,
         status: statuses.added,
         key,
         value: value2,
@@ -109,16 +115,16 @@ const compare = (data1, data2) => {
     if (!keys2.includes(key)) {
       if (isObject(value1)) {
         return [...acc, {
-          type: type.nested,
-          status: statuses.removed,
+          type: types.nested,
+          status: statuses.deleted,
           key,
-          value1,
+          value: value1,
           children: stringify(value1)
         }];
       }
       return [...acc, {
-        type: type.flat,
-        status: statuses.removed,
+        type: types.flat,
+        status: statuses.deleted,
         key,
         value: value1,
         children: null
@@ -132,25 +138,7 @@ const compare = (data1, data2) => {
 };
 
 const format = (ast) => {
-  const iter = (lines, level) => lines.map((line) => {
-    const baseOffset = ' '.repeat(2);
-    const offset = baseOffset + baseOffset.repeat(level);
-    const [sign, key, value, children] = line;
-
-    if (children && children.length > 0) {
-      const childrenStrings = iter(children, level + 2);
-      return `\n${offset}${sign} ${key}: {${childrenStrings}\n${offset}  }`;
-    }
-
-    return `\n${offset}${sign} ${key}: ${value}`;
-  });
-
-  const result = iter(ast, 0);
-
-  const start = '{';
-  const end = '\n}';
-
-  return `${start}${result.join('')}${end}`;
+  // RIGHT IT!
 };
 
 export default (path1, path2) => {
@@ -161,7 +149,7 @@ export default (path1, path2) => {
   const data2 = parseFile(content2, format2);
 
   const differenceInFiles = compare(data1, data2);
-  console.log({result: JSON.stringify(differenceInFiles)})
+  console.log({ast: JSON.stringify(differenceInFiles)})
   const result = format(differenceInFiles);
 
   return result;
