@@ -27,14 +27,17 @@ const diff = genDiff(pathToFile1, pathToFile2);
 console.log(diff);
 ```
 
-### Example of usage with `json` files
+### Example of usage with flat `json` files
 [![asciicast](https://asciinema.org/a/Or3PEVZpX4hZygBYvDAl8LTL3.svg)](https://asciinema.org/a/Or3PEVZpX4hZygBYvDAl8LTL3)
 
-### Example of usage with `yml` files
+### Example of usage with flat `yml` files
 [![asciicast](https://asciinema.org/a/c8QWfzSsUgrVIPUB43BKNJjit.svg)](https://asciinema.org/a/c8QWfzSsUgrVIPUB43BKNJjit)
 
-### Example of usage with `ini` files
+### Example of usage with flat `ini` files
 [![asciicast](https://asciinema.org/a/JhgwBFeHTvHmoYcCjkD64p93m.svg)](https://asciinema.org/a/JhgwBFeHTvHmoYcCjkD64p93m)
+
+### Example of usage with recursive format with `json` files
+[![asciicast](https://asciinema.org/a/ORozt8XjL0HPtTLOM2gS7W42T.svg)](https://asciinema.org/a/ORozt8XjL0HPtTLOM2gS7W42T)
 
 ### Help:
 
