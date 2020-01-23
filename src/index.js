@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { has, union } from 'lodash';
+import { has, union, flatten } from 'lodash';
 import parseFile from './parsers';
 
 const readFile = (filePath) => {
@@ -9,9 +9,6 @@ const readFile = (filePath) => {
   const content = fs.readFileSync(absolutePath);
   return [content.toString(), fileFormat];
 };
-
-// status: ADDED, REMOVED, CHANGED, UNCHANGED
-// ['type', 'status', 'key', 'value', 'children?']
 
 const types = {
   flat: 'flat',
@@ -29,7 +26,7 @@ const signs = {
   added: '+',
   deleted: '-',
   changed: '-',
-  unchanged: ' '
+  unchanged: ' ',
 };
 
 const isObject = (data) => typeof data === 'object';
@@ -43,8 +40,8 @@ const stringify = (data) => {
       status: statuses.unchanged,
       key,
       value,
-      children: isObject(value) ? stringify(value) : null
-    }]
+      children: isObject(value) ? stringify(value) : null,
+    }];
   }, []);
 };
 
@@ -137,9 +134,26 @@ const compare = (data1, data2) => {
   return ast;
 };
 
-const format = (ast) => {
-  // RIGHT IT!
+const format = (ast, level = 0) => {
+  const baseOffset = '  ';
+  const offset = baseOffset + baseOffset.repeat(level * 2);
+  const iter = (nodes, acc) => nodes.map((node) => {
+    const sign = signs[node.status];
+    if (node.type === 'flat') {
+      const line = `${offset}${sign} ${node.key}: ${node.value}`;
+      return [...acc, line]
+    }
+
+    return [...acc,
+      `${offset}${sign} ${node.key}: {`,
+      ...format(node.children, level + 1),
+      `${offset}  }`
+    ]
+  });
+  return flatten(iter(ast, []))
 };
+
+const formatToString = lines => `{\n${lines.join('\n')}\n}`;
 
 export default (path1, path2) => {
   const [content1, format1] = readFile(path1);
@@ -149,8 +163,9 @@ export default (path1, path2) => {
   const data2 = parseFile(content2, format2);
 
   const differenceInFiles = compare(data1, data2);
-  console.log({ast: JSON.stringify(differenceInFiles)})
-  const result = format(differenceInFiles);
+
+  const lines = format(differenceInFiles);
+  const result = formatToString(lines);
 
   return result;
 };
