@@ -1,4 +1,4 @@
-import {flatten} from "lodash";
+import { flatten } from 'lodash';
 
 const format = (ast) => {
   const iter = (nodes, acc) => nodes.map((node) => {
@@ -19,5 +19,5 @@ const formatToString = (lines) => lines.join('\n');
 export default (ast) => {
   const lines = format(ast);
   const result = formatToString(lines);
-  return result
-}
+  return result;
+};

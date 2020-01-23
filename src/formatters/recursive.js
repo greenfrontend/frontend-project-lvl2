@@ -1,4 +1,4 @@
-import {flatten} from "lodash";
+import { flatten } from 'lodash';
 
 const signs = {
   added: '+',
@@ -31,5 +31,5 @@ const formatToString = (lines) => `{\n${lines.join('\n')}\n}`;
 export default (ast) => {
   const lines = format(ast);
   const result = formatToString(lines);
-  return result
-}
+  return result;
+};

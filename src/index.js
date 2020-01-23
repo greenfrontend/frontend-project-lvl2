@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { has, union, flatten } from 'lodash';
+import { has, union } from 'lodash';
 import parseFile from './parsers';
 import format from './formatters';
 
