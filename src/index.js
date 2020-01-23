@@ -70,7 +70,7 @@ const compare = (data1, data2) => {
           status: statuses.unchanged,
           key,
           value: value1,
-          children: null
+          children: null,
         }];
       }
 
@@ -80,15 +80,15 @@ const compare = (data1, data2) => {
           status: statuses.added,
           key,
           value: value2,
-          children: isObject(value2) ? stringify(value2) : null
+          children: isObject(value2) ? stringify(value2) : null,
         },
         {
           type: isObject(value1) ? types.nested : types.flat,
           status: statuses.deleted,
           key,
           value: value1,
-          children: isObject(value1) ? stringify(value1) : null
-        }
+          children: isObject(value1) ? stringify(value1) : null,
+        },
       ];
     }
     if (!keys1.includes(key)) {
@@ -98,7 +98,7 @@ const compare = (data1, data2) => {
           status: statuses.added,
           key,
           value: value2,
-          children: stringify(value2)
+          children: stringify(value2),
         }];
       }
       return [...acc, {
@@ -106,7 +106,7 @@ const compare = (data1, data2) => {
         status: statuses.added,
         key,
         value: value2,
-        children: null
+        children: null,
       }];
     }
     if (!keys2.includes(key)) {
@@ -116,7 +116,7 @@ const compare = (data1, data2) => {
           status: statuses.deleted,
           key,
           value: value1,
-          children: stringify(value1)
+          children: stringify(value1),
         }];
       }
       return [...acc, {
@@ -124,10 +124,10 @@ const compare = (data1, data2) => {
         status: statuses.deleted,
         key,
         value: value1,
-        children: null
+        children: null,
       }];
     }
-    return null
+    return null;
   };
 
   const ast = keys.reduce(buildAST, []);
@@ -141,19 +141,19 @@ const format = (ast, level = 0) => {
     const sign = signs[node.status];
     if (node.type === 'flat') {
       const line = `${offset}${sign} ${node.key}: ${node.value}`;
-      return [...acc, line]
+      return [...acc, line];
     }
 
     return [...acc,
       `${offset}${sign} ${node.key}: {`,
       ...format(node.children, level + 1),
-      `${offset}  }`
-    ]
+      `${offset}  }`,
+    ];
   });
-  return flatten(iter(ast, []))
+  return flatten(iter(ast, []));
 };
 
-const formatToString = lines => `{\n${lines.join('\n')}\n}`;
+const formatToString = (lines) => `{\n${lines.join('\n')}\n}`;
 
 export default (path1, path2) => {
   const [content1, format1] = readFile(path1);
