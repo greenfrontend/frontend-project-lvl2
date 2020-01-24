@@ -70,19 +70,15 @@ const compare = (data1, data2) => {
 
       return [...acc,
         {
+          previousType: isObject(value1) ? types.nested : types.flat,
           type: isObject(value2) ? types.nested : types.flat,
-          status: statuses.added,
+          status: statuses.changed,
           key,
+          previousValue: value1,
           value: value2,
+          previousChildren: isObject(value1) ? stringify(value1) : null,
           children: isObject(value2) ? stringify(value2) : null,
-        },
-        {
-          type: isObject(value1) ? types.nested : types.flat,
-          status: statuses.deleted,
-          key,
-          value: value1,
-          children: isObject(value1) ? stringify(value1) : null,
-        },
+        }
       ];
     }
     if (!keys1.includes(key)) {
@@ -128,7 +124,7 @@ const compare = (data1, data2) => {
   return ast;
 };
 
-export default (path1, path2, selectedFormat = 'plane') => {
+export default (path1, path2, selectedFormat = 'recursive') => {
   const [content1, format1] = readFile(path1);
   const [content2, format2] = readFile(path2);
 
@@ -138,6 +134,7 @@ export default (path1, path2, selectedFormat = 'plane') => {
   const differenceInFiles = compare(data1, data2);
 
   const result = format(differenceInFiles, selectedFormat);
+  console.log(JSON.stringify(differenceInFiles))
 
   return result;
 };
