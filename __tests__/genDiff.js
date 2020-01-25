@@ -2,7 +2,7 @@ import path from 'path';
 import genDiff from '../src';
 import resultFlat from '../__fixtures__/resultFlat';
 import resultNested from '../__fixtures__/resultNested';
-// import resultPlaneFlat from '../__fixtures__/resultPlaneFlat';
+import resultPlaneFlat from '../__fixtures__/resultPlaneFlat';
 
 const formats = ['json', 'yml', 'ini'];
 const fixturesPath = '__fixtures__';
@@ -27,6 +27,6 @@ test.each(nestedTestTable)('compare nested files %s', (format, path1, path2) => 
   expect(genDiff(path1, path2)).toEqual(resultNested);
 });
 
-// test.each(flatTestTable)('compare flat files %s', (format, path1, path2) => {
-//   expect(genDiff(path1, path2, 'plane')).toEqual(resultPlaneFlat);
-// });
+test.each(flatTestTable)('compare flat files %s', (format, path1, path2) => {
+  expect(genDiff(path1, path2, 'plane')).toEqual(resultPlaneFlat);
+});
