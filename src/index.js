@@ -134,7 +134,7 @@ export default (path1, path2, selectedFormat = 'recursive') => {
   const differenceInFiles = compare(data1, data2);
 
   const result = format(differenceInFiles, selectedFormat);
-  console.log(JSON.stringify(differenceInFiles))
+  // console.log(JSON.stringify(differenceInFiles))
 
   return result;
 };

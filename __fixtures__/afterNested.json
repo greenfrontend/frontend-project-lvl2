@@ -14,13 +14,11 @@
       "ops": "vops"
     }
   },
-
   "group1": {
     "foo": "bar",
     "baz": "bars",
     "nest": "str"
   },
-
   "group3": {
     "fee": 100500
   }
