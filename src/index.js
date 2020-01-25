@@ -78,7 +78,7 @@ const compare = (data1, data2) => {
           value: value2,
           previousChildren: isObject(value1) ? stringify(value1) : null,
           children: isObject(value2) ? stringify(value2) : null,
-        }
+        },
       ];
     }
     if (!keys1.includes(key)) {

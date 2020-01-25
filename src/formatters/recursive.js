@@ -27,7 +27,7 @@ const format = (ast, level = 0) => {
         children: node.children,
       };
 
-      return flatten([...acc, format([addedNode, deletedNode], level)])
+      return flatten([...acc, format([addedNode, deletedNode], level)]);
     }
 
     const sign = signs[node.status];
@@ -41,7 +41,7 @@ const format = (ast, level = 0) => {
       `${offset}${sign} ${node.key}: {`,
       ...format(node.children, level + 1),
       `${offset}  }`,
-    ]
+    ];
   });
   return flatten(iter(ast, []));
 };

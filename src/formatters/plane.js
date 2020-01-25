@@ -2,17 +2,17 @@ import { flatten } from 'lodash';
 
 const format = (ast) => {
   const iter = (nodes, acc) => nodes
-    .filter(node => node.status !== 'unchanged')
+    .filter((node) => node.status !== 'unchanged')
     .map((node) => {
-    if (node.type === 'flat') {
-      return [...acc, `Property: ${node.key} was ${node.status}`];
-    }
+      if (node.type === 'flat') {
+        return [...acc, `Property: ${node.key} was ${node.status}`];
+      }
 
-    return [...acc,
-      node.key,
-      ...format(node.children),
-    ];
-  });
+      return [...acc,
+        node.key,
+        ...format(node.children),
+      ];
+    });
   return flatten(iter(ast, []));
 };
 
