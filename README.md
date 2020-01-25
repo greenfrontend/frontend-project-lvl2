@@ -36,8 +36,11 @@ console.log(diff);
 ### Example of usage with flat `ini` files
 [![asciicast](https://asciinema.org/a/JhgwBFeHTvHmoYcCjkD64p93m.svg)](https://asciinema.org/a/JhgwBFeHTvHmoYcCjkD64p93m)
 
-### Example of usage with recursive format with `json` files
+### Example of usage with recursive format
 [![asciicast](https://asciinema.org/a/ORozt8XjL0HPtTLOM2gS7W42T.svg)](https://asciinema.org/a/ORozt8XjL0HPtTLOM2gS7W42T)
+
+### Example of usage with plane format
+[![asciicast](https://asciinema.org/a/LcMyBN8KxEqPgo7RB3FO319U9.svg)](https://asciinema.org/a/LcMyBN8KxEqPgo7RB3FO319U9)
 
 ### Help:
 

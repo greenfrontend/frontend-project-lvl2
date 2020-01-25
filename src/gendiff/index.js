@@ -9,7 +9,7 @@ const main = () => {
     .option('-f, --format [type]', 'output format')
     .arguments('<firstConfig> <secondConfig>')
     .action((firstConfig, secondConfig) => {
-      const difference = genDiff(firstConfig, secondConfig);
+      const difference = genDiff(firstConfig, secondConfig, program.format);
       console.log(difference);
     })
     .parse(process.argv);
