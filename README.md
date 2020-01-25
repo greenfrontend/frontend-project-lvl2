@@ -42,6 +42,9 @@ console.log(diff);
 ### Example of usage with plane format
 [![asciicast](https://asciinema.org/a/LcMyBN8KxEqPgo7RB3FO319U9.svg)](https://asciinema.org/a/LcMyBN8KxEqPgo7RB3FO319U9)
 
+### Example of usage with json format
+[![asciicast](https://asciinema.org/a/SJB822db6INiAWeNqRJ7wowv1.svg)](https://asciinema.org/a/SJB822db6INiAWeNqRJ7wowv1)
+
 ### Help:
 
 ```bash
