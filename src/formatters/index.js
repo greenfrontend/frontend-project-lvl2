@@ -1,12 +1,13 @@
 import recursive from './recursive';
 import plane from './plane';
+import json from './json';
 
 export default (ast, format) => {
-  if (format === 'recursive') {
-    return recursive(ast);
-  }
-  if (format === 'plane') {
-    return plane(ast);
-  }
-  return null;
+  const formats = {
+    recursive,
+    plane,
+    json,
+  };
+
+  return formats[format](ast);
 };
