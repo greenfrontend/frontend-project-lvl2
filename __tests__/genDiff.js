@@ -1,17 +1,10 @@
 import path from 'path';
 import genDiff from '../src';
-import resultFlat from '../__fixtures__/resultFlat';
-import resultNested from '../__fixtures__/resultNested';
-import resultPlaneFlat from '../__fixtures__/resultPlaneFlat';
+import resultRecursive from '../__fixtures__/resultRecursive';
+import resultPlane from '../__fixtures__/resultPlane';
 
 const formats = ['json', 'yml', 'ini'];
 const fixturesPath = '__fixtures__';
-
-const flatTestTable = formats.map((format) => [
-  format,
-  path.join(fixturesPath, `before.${format}`),
-  path.join(fixturesPath, `after.${format}`),
-]);
 
 const nestedTestTable = formats.map((format) => [
   format,
@@ -19,14 +12,10 @@ const nestedTestTable = formats.map((format) => [
   path.join(fixturesPath, `afterNested.${format}`),
 ]);
 
-test.each(flatTestTable)('compare flat files %s', (format, path1, path2) => {
-  expect(genDiff(path1, path2)).toEqual(resultFlat);
+test.each(nestedTestTable)('compare with recursive format: %s', (format, path1, path2) => {
+  expect(genDiff(path1, path2)).toEqual(resultRecursive);
 });
 
-test.each(nestedTestTable)('compare nested files %s', (format, path1, path2) => {
-  expect(genDiff(path1, path2)).toEqual(resultNested);
-});
-
-test.each(flatTestTable)('compare flat files %s', (format, path1, path2) => {
-  expect(genDiff(path1, path2, 'plane')).toEqual(resultPlaneFlat);
+test.each(nestedTestTable)('compare with plane format: %s', (format, path1, path2) => {
+  expect(genDiff(path1, path2, 'plane')).toEqual(resultPlane);
 });

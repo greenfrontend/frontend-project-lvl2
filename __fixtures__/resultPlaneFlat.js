@@ -1,8 +1,0 @@
-const result = `
-Property 'timeout' was changed. From 50 to 20
-Property 'proxy' was deleted
-Property 'follow' was deleted
-Property 'verbose' was added with value: true
-`;
-
-export default result;
