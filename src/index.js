@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { has, union } from 'lodash';
-import parseFile from './parsers';
+import { has, union, isObject } from 'lodash';
+import parse from './parsers';
 import format from './formatters';
 
 const readFile = (filePath) => {
@@ -22,8 +22,6 @@ const statuses = {
   changed: 'changed',
   unchanged: 'unchanged',
 };
-
-const isObject = (data) => typeof data === 'object';
 
 const stringify = (data) => {
   const keys = Object.keys(data);
@@ -128,8 +126,8 @@ export default (path1, path2, selectedFormat = 'recursive') => {
   const [content1, format1] = readFile(path1);
   const [content2, format2] = readFile(path2);
 
-  const data1 = parseFile(content1, format1);
-  const data2 = parseFile(content2, format2);
+  const data1 = parse(content1, format1);
+  const data2 = parse(content2, format2);
 
   const differenceInFiles = compare(data1, data2);
 

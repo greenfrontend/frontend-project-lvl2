@@ -1,7 +1,7 @@
 import yaml from 'js-yaml';
 import ini from 'ini';
 
-const parseFile = (content, format) => {
+const parse = (content, format) => {
   const formats = {
     yml: yaml.load,
     json: JSON.parse,
@@ -10,4 +10,4 @@ const parseFile = (content, format) => {
   return formats[format](content);
 };
 
-export default parseFile;
+export default parse;
