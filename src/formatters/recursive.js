@@ -1,4 +1,4 @@
-import { flatten } from 'lodash';
+import { flatten, isObject, has } from 'lodash';
 
 const signs = {
   added: '+',
@@ -6,34 +6,41 @@ const signs = {
   unchanged: ' ',
 };
 
+const stringify = (obj, level) => {
+  const baseOffset = '    '; // 4
+  const keys = Object.keys(obj);
+  const result = keys.map((key) => {
+    const value = obj[key];
+    return `${baseOffset.repeat(level + 1)}${key}: ${value}`;
+  });
+  return `{\n${result.join('')}\n${baseOffset.repeat(level)}}`;
+};
+
 const format = (ast, level = 0) => {
   const baseOffset = '  ';
   const offset = baseOffset + baseOffset.repeat(level * 2);
+
   const iter = (nodes, acc) => nodes.map((node) => {
+    const sign = signs[node.status];
     if (node.status === 'changed') {
       const deletedNode = {
-        type: node.previousType,
         status: 'deleted',
         key: node.key,
-        value: node.previousValue,
-        children: node.previousChildren,
+        value: node.oldValue,
       };
 
       const addedNode = {
-        type: node.type,
         status: 'added',
         key: node.key,
-        value: node.value,
-        children: node.children,
+        value: node.newValue,
       };
 
-      return flatten([...acc, format([addedNode, deletedNode], level)]);
+      return flatten([...acc, format([deletedNode, addedNode], level)]);
     }
 
-    const sign = signs[node.status];
-
-    if (node.type === 'flat') {
-      const line = `${offset}${sign} ${node.key}: ${node.value}`;
+    if (!has(node, 'children')) {
+      const valueToString = isObject(node.value) ? stringify(node.value, level + 1) : node.value;
+      const line = `${offset}${sign} ${node.key}: ${valueToString}`;
       return [...acc, line];
     }
 
@@ -43,6 +50,7 @@ const format = (ast, level = 0) => {
       `${offset}  }`,
     ];
   });
+
   return flatten(iter(ast, []));
 };
 
