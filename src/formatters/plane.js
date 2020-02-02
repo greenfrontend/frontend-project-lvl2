@@ -1,29 +1,33 @@
-import { flatten } from 'lodash';
+import { flatten, has, isObject } from 'lodash';
 
 const format = (ast, parentKey = '') => {
-  const iter = (nodes, acc) => nodes
-    .map((node) => {
-      if (node.type === 'flat' && node.status === 'unchanged') {
-        return acc;
-      }
-      const currentKey = parentKey !== '' ? `${parentKey}.${node.key}` : node.key;
-      if (node.status === 'changed') {
-        const previous = node.previousType === 'flat' ? node.previousValue : '[complex value]';
-        const current = node.type === 'flat' ? node.value : '[complex value]';
-        return [...acc, `Property '${currentKey}' was ${node.status}. From ${previous} to ${current}`];
-      }
-      if (node.status === 'added') {
-        const value = node.type === 'flat' ? node.value : '[complex value]';
-        return [...acc, `Property '${currentKey}' was ${node.status} with value: ${value}`];
-      }
-      if (node.status === 'deleted') {
-        return [...acc, `Property '${currentKey}' was ${node.status}`];
-      }
+  const iter = (nodes, acc) => nodes.map((node) => {
+    if (node.status === 'unchanged' && !has(node, 'children')) {
+      return acc;
+    }
 
-      return [...acc,
-        ...format(node.children, `${parentKey !== '' ? `${parentKey}.` : ''}${node.key}`),
-      ];
-    });
+    const currentKey = parentKey !== '' ? `${parentKey}.${node.key}` : node.key;
+
+    if (node.status === 'changed') {
+      const oldValue = isObject(node.oldValue) ? '[complex value]' : node.oldValue;
+      const newValue = isObject(node.newValue) ? '[complex value]' : node.newValue;
+      return [...acc, `Property '${currentKey}' was ${node.status}. From ${oldValue} to ${newValue}`];
+    }
+
+    if (node.status === 'deleted') {
+      return [...acc, `Property '${currentKey}' was ${node.status}`];
+    }
+
+    if (node.status === 'added') {
+      const value = isObject(node.value) ? '[complex value]' : node.value;
+      return [...acc, `Property '${currentKey}' was ${node.status} with value: ${value}`];
+    }
+
+    return [...acc,
+      ...format(node.children, `${parentKey !== '' ? `${parentKey}.` : ''}${node.key}`),
+    ];
+  });
+
   return flatten(iter(ast, []));
 };
 
