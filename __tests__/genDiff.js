@@ -22,7 +22,7 @@ test.each(nestedTestTable)('compare with plane format: %s', (format, path1, path
   expect(genDiff(path1, path2, 'plane')).toEqual(resultPlane);
 });
 
-// test.each(nestedTestTable)('compare with json format: %s', (format, path1, path2) => {
-//   const resultJson = fs.readFileSync(path.join(fixturesPath, 'resultJson.txt'), 'utf-8');
-//   expect(genDiff(path1, path2, 'json')).toEqual(resultJson);
-// });
+test.each(nestedTestTable)('compare with json format: %s', (format, path1, path2) => {
+  const resultJson = fs.readFileSync(path.join(fixturesPath, 'resultJson.txt'), 'utf-8');
+  expect(genDiff(path1, path2, 'json')).toEqual(resultJson);
+});
