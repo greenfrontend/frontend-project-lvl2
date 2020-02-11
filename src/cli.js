@@ -2,7 +2,7 @@
 import program from 'commander';
 import genDiff from '..';
 
-const main = () => {
+export default () => {
   program
     .version('0.0.1')
     .description('Compares two configuration files and shows a difference.')
@@ -14,5 +14,3 @@ const main = () => {
     })
     .parse(process.argv);
 };
-
-export default main;

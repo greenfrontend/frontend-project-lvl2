@@ -89,7 +89,8 @@ export default (path1, path2, selectedFormat = 'recursive') => {
   const data1 = parse(content1, format1);
   const data2 = parse(content2, format2);
 
-  const differenceInFiles = compare(data1, data2);
-  const result = format(differenceInFiles, selectedFormat);
+  const difference = compare(data1, data2);
+  const result = format(difference, selectedFormat);
+
   return result;
 };

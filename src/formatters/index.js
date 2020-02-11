@@ -1,11 +1,11 @@
 import recursive from './recursive';
-import plane from './plane';
+import plain from './plain';
 import json from './json';
 
 export default (ast, format) => {
   const formats = {
     recursive,
-    plane,
+    plain,
     json,
   };
 

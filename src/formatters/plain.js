@@ -1,5 +1,7 @@
 import { flatten, has, isObject } from 'lodash';
 
+const getValue = (value) => (isObject(value) ? '[complex value]' : value);
+
 const format = (ast, parentKey = '') => {
   const iter = (nodes, acc) => nodes.map((node) => {
     if (node.status === 'unchanged' && !has(node, 'children')) {
@@ -9,8 +11,8 @@ const format = (ast, parentKey = '') => {
     const currentKey = parentKey !== '' ? `${parentKey}.${node.key}` : node.key;
 
     if (node.status === 'changed') {
-      const oldValue = isObject(node.oldValue) ? '[complex value]' : node.oldValue;
-      const newValue = isObject(node.newValue) ? '[complex value]' : node.newValue;
+      const oldValue = getValue(node.oldValue);
+      const newValue = getValue(node.newValue);
       return [...acc, `Property '${currentKey}' was ${node.status}. From ${oldValue} to ${newValue}`];
     }
 
@@ -31,7 +33,7 @@ const format = (ast, parentKey = '') => {
   return flatten(iter(ast, []));
 };
 
-const formatToString = (lines) => `\n${lines.join('\n')}\n`;
+const formatToString = (lines) => lines.join('\n');
 
 export default (ast) => {
   const lines = format(ast);
