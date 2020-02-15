@@ -27,15 +27,6 @@ const compare = (data1, data2) => {
     const value1 = data1[key];
     const value2 = data2[key];
 
-    // unchanged
-    if (value1 === value2) {
-      return [...acc, {
-        key,
-        value: value1,
-        status: statuses.unchanged,
-      }];
-    }
-
     // deleted
     if (!has(data2, key)) {
       return [...acc, {
@@ -51,6 +42,15 @@ const compare = (data1, data2) => {
         key,
         value: value2,
         status: statuses.added,
+      }];
+    }
+
+    // unchanged
+    if (value1 === value2) {
+      return [...acc, {
+        key,
+        value: value1,
+        status: statuses.unchanged,
       }];
     }
 

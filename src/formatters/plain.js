@@ -21,7 +21,7 @@ const format = (ast, parentKey = '') => {
     }
 
     if (node.status === 'added') {
-      const value = isObject(node.value) ? '[complex value]' : node.value;
+      const value = getValue(node.value);
       return [...acc, `Property '${currentKey}' was ${node.status} with value: ${value}`];
     }
 
