@@ -1,6 +1,6 @@
 
 import program from 'commander';
-import genDiff from '..';
+import genDiff from './index';
 
 export default () => {
   program
