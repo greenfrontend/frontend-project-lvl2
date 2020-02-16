@@ -27,13 +27,6 @@ const format = (ast, level = 0) => {
   const offset = baseOffset + baseOffset.repeat(level * 2);
 
   return ast.reduce((acc, node) => {
-    if (node.type === types.added
-      || node.type === types.deleted
-      || node.type === types.unchanged) {
-      const valueToString = getValue(node, level);
-      const line = `${offset}${signs[node.type]} ${node.key}: ${valueToString}`;
-      return [...acc, line];
-    }
     if (node.type === types.changed) {
       const deletedNode = {
         type: 'deleted',
@@ -48,6 +41,7 @@ const format = (ast, level = 0) => {
       };
       return flatten([...acc, format([deletedNode, addedNode], level)]);
     }
+
     if (node.type === types.nested) {
       return [...acc,
         `${offset}${signs[node.type]} ${node.key}: {`,
@@ -55,7 +49,11 @@ const format = (ast, level = 0) => {
         `${offset}  }`,
       ];
     }
-    return acc;
+
+    // added || deleted || unchanged
+    const valueToString = getValue(node, level);
+    const line = `${offset}${signs[node.type]} ${node.key}: ${valueToString}`;
+    return [...acc, line];
   }, []);
 };
 
