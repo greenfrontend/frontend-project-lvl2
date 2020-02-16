@@ -27,17 +27,9 @@ const format = (ast, level = 0) => {
   const offset = baseOffset + baseOffset.repeat(level * 2);
 
   return ast.reduce((acc, node) => {
-    if (node.type === types.added) {
-      const valueToString = getValue(node, level);
-      const line = `${offset}${signs[node.type]} ${node.key}: ${valueToString}`;
-      return [...acc, line];
-    }
-    if (node.type === types.deleted) {
-      const valueToString = getValue(node, level);
-      const line = `${offset}${signs[node.type]} ${node.key}: ${valueToString}`;
-      return [...acc, line];
-    }
-    if (node.type === types.unchanged) {
+    if (node.type === types.added
+      || node.type === types.deleted
+      || node.type === types.unchanged) {
       const valueToString = getValue(node, level);
       const line = `${offset}${signs[node.type]} ${node.key}: ${valueToString}`;
       return [...acc, line];
