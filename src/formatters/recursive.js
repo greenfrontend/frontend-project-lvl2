@@ -1,9 +1,11 @@
-import { flatten, isObject, has } from 'lodash';
+import { flatten, isObject } from 'lodash';
+import types from '../types';
 
 const signs = {
   added: '+',
   deleted: '-',
   unchanged: ' ',
+  nested: ' ',
 };
 
 const stringify = (obj, level) => {
@@ -16,42 +18,53 @@ const stringify = (obj, level) => {
   return `{\n${result.join('')}\n${baseOffset.repeat(level)}}`;
 };
 
+const getValue = (node, level) => (isObject(node.value)
+  ? stringify(node.value, level + 1)
+  : node.value);
+
 const format = (ast, level = 0) => {
   const baseOffset = '  ';
   const offset = baseOffset + baseOffset.repeat(level * 2);
 
-  const iter = (nodes, acc) => nodes.map((node) => {
-    const sign = signs[node.status];
-    if (node.status === 'changed') {
+  return ast.reduce((acc, node) => {
+    if (node.type === types.added) {
+      const valueToString = getValue(node, level);
+      const line = `${offset}${signs[node.type]} ${node.key}: ${valueToString}`;
+      return [...acc, line];
+    }
+    if (node.type === types.deleted) {
+      const valueToString = getValue(node, level);
+      const line = `${offset}${signs[node.type]} ${node.key}: ${valueToString}`;
+      return [...acc, line];
+    }
+    if (node.type === types.unchanged) {
+      const valueToString = getValue(node, level);
+      const line = `${offset}${signs[node.type]} ${node.key}: ${valueToString}`;
+      return [...acc, line];
+    }
+    if (node.type === types.changed) {
       const deletedNode = {
-        status: 'deleted',
+        type: 'deleted',
         key: node.key,
         value: node.oldValue,
       };
 
       const addedNode = {
-        status: 'added',
+        type: 'added',
         key: node.key,
         value: node.newValue,
       };
-
       return flatten([...acc, format([deletedNode, addedNode], level)]);
     }
-
-    if (!has(node, 'children')) {
-      const valueToString = isObject(node.value) ? stringify(node.value, level + 1) : node.value;
-      const line = `${offset}${sign} ${node.key}: ${valueToString}`;
-      return [...acc, line];
+    if (node.type === types.nested) {
+      return [...acc,
+        `${offset}${signs[node.type]} ${node.key}: {`,
+        ...format(node.children, level + 1),
+        `${offset}  }`,
+      ];
     }
-
-    return [...acc,
-      `${offset}${sign} ${node.key}: {`,
-      ...format(node.children, level + 1),
-      `${offset}  }`,
-    ];
-  });
-
-  return flatten(iter(ast, []));
+    return acc;
+  }, []);
 };
 
 const formatToString = (lines) => `{\n${lines.join('\n')}\n}`;
