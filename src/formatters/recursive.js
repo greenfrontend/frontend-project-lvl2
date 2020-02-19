@@ -27,33 +27,30 @@ const format = (ast, level = 0) => {
   const offset = baseOffset + baseOffset.repeat(level * 2);
 
   return ast.reduce((acc, node) => {
-    if (node.type === types.changed) {
-      const deletedNode = {
-        type: 'deleted',
-        key: node.key,
-        value: node.oldValue,
-      };
-
-      const addedNode = {
-        type: 'added',
-        key: node.key,
-        value: node.newValue,
-      };
-      return flatten([...acc, format([deletedNode, addedNode], level)]);
+    switch (node.type) {
+      case types.changed:
+        return flatten([...acc, format([{
+          type: 'deleted',
+          key: node.key,
+          value: node.oldValue,
+        }, {
+          type: 'added',
+          key: node.key,
+          value: node.newValue,
+        }], level)]);
+      case types.nested:
+        return [...acc,
+          `${offset}${signs[node.type]} ${node.key}: {`,
+          ...format(node.children, level + 1),
+          `${offset}  }`,
+        ];
+      case types.added:
+      case types.deleted:
+      case types.unchanged:
+        return [...acc, `${offset}${signs[node.type]} ${node.key}: ${getValue(node, level)}`];
+      default:
+        return null;
     }
-
-    if (node.type === types.nested) {
-      return [...acc,
-        `${offset}${signs[node.type]} ${node.key}: {`,
-        ...format(node.children, level + 1),
-        `${offset}  }`,
-      ];
-    }
-
-    // added || deleted || unchanged
-    const valueToString = getValue(node, level);
-    const line = `${offset}${signs[node.type]} ${node.key}: ${valueToString}`;
-    return [...acc, line];
   }, []);
 };
 
