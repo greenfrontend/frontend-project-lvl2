@@ -49,7 +49,7 @@ const format = (ast, level = 0) => {
       case types.unchanged:
         return [`${offset}${signs[node.type]} ${node.key}: ${getValue(node, level)}`];
       default:
-        return null;
+        throw new Error(`${node.type} is unknown type`);
     }
   });
 };

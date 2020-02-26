@@ -18,7 +18,7 @@ const format = (ast, parentKey = '') => ast.map((node) => {
     case types.nested:
       return flatten(format(node.children, `${parentKey !== '' ? `${parentKey}.` : ''}${node.key}`));
     default:
-      return null;
+      throw new Error(`${node.type} is unknown type`);
   }
 });
 
